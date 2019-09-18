@@ -131,6 +131,7 @@ config/*
 
 response/*
 !response/.gitkeep
+!response/response_template.json
 
 .vscode/*
 
