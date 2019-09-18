@@ -127,7 +127,7 @@ certificates/*
 !certificates/.gitkeep
 
 config/*
-!config/rewrite_mapping.json
+!config/rewrite_mapping.default.json
 
 response/*
 !response/.gitkeep
