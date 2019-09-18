@@ -9,3 +9,6 @@ services:
       - "0.0.0.0:8081:8081"
     stdin_open: true
     tty: true
+    volumes:
+      - ./mitm:/root/mitm
+      - ./certificates:/root/.mitmproxy
