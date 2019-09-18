@@ -3,6 +3,8 @@ services:
   mitmproxy:
     container_name: "mitmproxy"
     entrypoint: ["mitmdump", "-s", "/root/interposer/mitm/mock-response.py"]
+    environment:
+      - ENVIRONMENT=${ENVIRONMENT}
     image: mitmproxy/mitmproxy:latest
     ports:
       - "8080:8080"

@@ -1,9 +1,11 @@
 from mitmproxy import http
 import json, os, re
 
+ENVIRONMENT = os.getenv('ENVIRONMENT', 'default')
+
 def response(flow: http.HTTPFlow) -> None:
     request_url = flow.request.url
-    with open(os.path.abspath('config/rewrite_mapping.json'), 'r') as f:
+    with open(os.path.abspath(f"config/rewrite_mapping.{ENVIRONMENT}.json"), 'r') as f:
         rewrite_mapping = json.load(f)
         for pattern, response_filename in rewrite_mapping:
             if re.search(pattern, request_url):
