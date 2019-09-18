@@ -126,8 +126,11 @@ dmypy.json
 certificates/*
 !certificates/.gitkeep
 
-config/
+config/*
 !config/rewrite_mapping.json
+
+response/*
+!response/.gitkeep
 
 .vscode/*
 
