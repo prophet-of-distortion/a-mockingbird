@@ -2,7 +2,7 @@ version: "3"
 services:
   mitmproxy:
     container_name: "mitmproxy"
-    entrypoint: ["mitmdump"]
+    entrypoint: ["mitmdump", "-s", "/root/interposer/mitm/mock-response.py"]
     image: mitmproxy/mitmproxy:latest
     ports:
       - "8080:8080"
@@ -10,5 +10,8 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - ./mitm:/root/mitm
       - ./certificates:/root/.mitmproxy
+      - ./config:/root/interposer/config
+      - ./mitm:/root/interposer/mitm
+      - ./response:/root/interposer/response
+    working_dir: "/root/interposer"
