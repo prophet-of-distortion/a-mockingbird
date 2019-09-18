@@ -1,0 +1,11 @@
+version: "3"
+services:
+  mitmproxy:
+    container_name: "mitmproxy"
+    entrypoint: ["mitmdump"]
+    image: mitmproxy/mitmproxy:latest
+    ports:
+      - "8080:8080"
+      - "0.0.0.0:8081:8081"
+    stdin_open: true
+    tty: true
