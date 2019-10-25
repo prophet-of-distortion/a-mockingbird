@@ -1,7 +1,9 @@
 from flask import Flask, jsonify
+from flask_cors import CORS
 import json, os
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/mappings', methods=['GET'])
 def get_all_mappings():
