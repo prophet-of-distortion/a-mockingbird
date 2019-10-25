@@ -2,9 +2,7 @@ version: "3"
 services:
   mitmproxy:
     container_name: "mitmproxy"
-    entrypoint: ["mitmdump", "-s", "/root/interposer/mitm/mock-response.py"]
-    environment:
-      - ENVIRONMENT=${ENVIRONMENT}
+    entrypoint: ["mitmdump", "-s", "/root/mockingbird/mitm/mock-response.py"]
     image: mitmproxy/mitmproxy:latest
     ports:
       - "8080:8080"
@@ -13,7 +11,6 @@ services:
     tty: true
     volumes:
       - ./certificates:/root/.mitmproxy
-      - ./config:/root/interposer/config
-      - ./mitm:/root/interposer/mitm
-      - ./response:/root/interposer/response
-    working_dir: "/root/interposer"
+      - ./config:/root/mockingbird/config
+      - ./mitm:/root/mockingbird/mitm
+    working_dir: "/root/mockingbird"

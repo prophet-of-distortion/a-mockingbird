@@ -127,11 +127,6 @@ certificates/*
 !certificates/.gitkeep
 
 config/*
-!config/rewrite_mapping.default.json
-
-response/*
-!response/.gitkeep
-!response/response_template.json
+!config/mappings.default.json
 
 .vscode/*
-
