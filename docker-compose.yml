@@ -1,7 +1,6 @@
 version: "3"
 services:
   mitmproxy:
-    container_name: "mitmproxy"
     entrypoint: ["mitmdump", "-s", "/root/mockingbird/mitm/mock-response.py"]
     image: mitmproxy/mitmproxy:latest
     ports:
