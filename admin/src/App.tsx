@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Container, Header, Icon, Modal, Table } from 'semantic-ui-react'
+import { Button, Container, Header, Icon, Modal, Rail, Table } from 'semantic-ui-react'
 import './App.css';
 import ApiClient from './apiClient';
 
 const App: React.FC = () => {
+  const DEFAULT_FORM_STATE = {
+    pattern: '',
+    response: {},
+    open: false,
+  }
+
   const [mappings, setMappings] = useState([]);
   useEffect(() => {
     const apiClient = new ApiClient();
@@ -12,10 +18,12 @@ const App: React.FC = () => {
     });
   }, []);
 
-  const [formOpen, setFormOpen] = useState({ open: false });
+  const [formOpen, setFormOpen] = useState(DEFAULT_FORM_STATE);
 
-  const openForm = () => setFormOpen({ open: true })
-  const closeForm = () => setFormOpen({ open: false })
+  const openForm = (pattern: string, response: any) => {
+    setFormOpen({ pattern, response, open: true })
+  }
+  const closeForm = () => setFormOpen(DEFAULT_FORM_STATE)
 
   const renderMappings = (mappings: any) => {
     if (!mappings) { return [] }
@@ -30,7 +38,7 @@ const App: React.FC = () => {
             {JSON.stringify(response)}
           </Table.Cell>
           <Table.Cell>
-            <Button circular icon='pencil' onClick={openForm} />
+            <Button circular icon='pencil' onClick={() => openForm(pattern, mapping)} />
           </Table.Cell>
         </Table.Row>
       );
@@ -47,7 +55,10 @@ const App: React.FC = () => {
         </Header.Content>
       </Header>
 
-      <Table>
+      <Button primary>Add item</Button>
+
+      <Table structured>
+
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Pattern</Table.HeaderCell>
@@ -62,15 +73,12 @@ const App: React.FC = () => {
       </Table>
 
       <Modal open={formOpen.open} onClose={closeForm}>
-        <Modal.Header>Select a Photo</Modal.Header>
+        <Modal.Header>{formOpen.pattern}</Modal.Header>
         <Modal.Content>
           <Modal.Description>
-            <Header>Default Profile Image</Header>
-            <p>
-              We've found the following gravatar image associated with your e-mail
-              address.
-            </p>
-            <p>Is it okay to use this photo?</p>
+            <code>
+              {JSON.stringify(formOpen.response)}
+            </code>
           </Modal.Description>
         </Modal.Content>
       </Modal>
