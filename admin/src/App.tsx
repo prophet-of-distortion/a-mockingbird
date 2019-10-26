@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Header, Icon, Table } from 'semantic-ui-react'
+import { Button, Container, Header, Icon, Modal, Table } from 'semantic-ui-react'
 import './App.css';
 import ApiClient from './apiClient';
 
 const App: React.FC = () => {
   const [mappings, setMappings] = useState([]);
-
   useEffect(() => {
     const apiClient = new ApiClient();
     apiClient.getMappings().then((data) => {
       setMappings(data);
     });
   }, []);
+
+  const [formOpen, setFormOpen] = useState({ open: false });
+
+  const openForm = () => setFormOpen({ open: true })
+  const closeForm = () => setFormOpen({ open: false })
 
   const renderMappings = (mappings: any) => {
     if (!mappings) { return [] }
@@ -22,8 +26,11 @@ const App: React.FC = () => {
           <Table.Cell>
             {pattern}
           </Table.Cell>
-          <Table.Cell>
+          <Table.Cell className='response'>
             {JSON.stringify(response)}
+          </Table.Cell>
+          <Table.Cell>
+            <Button circular icon='pencil' onClick={openForm} />
           </Table.Cell>
         </Table.Row>
       );
@@ -44,7 +51,7 @@ const App: React.FC = () => {
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>Pattern</Table.HeaderCell>
-            <Table.HeaderCell>Response</Table.HeaderCell>
+            <Table.HeaderCell colSpan="2">Response</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
 
@@ -53,6 +60,21 @@ const App: React.FC = () => {
         </Table.Body>
 
       </Table>
+
+      <Modal open={formOpen.open} onClose={closeForm}>
+        <Modal.Header>Select a Photo</Modal.Header>
+        <Modal.Content>
+          <Modal.Description>
+            <Header>Default Profile Image</Header>
+            <p>
+              We've found the following gravatar image associated with your e-mail
+              address.
+            </p>
+            <p>Is it okay to use this photo?</p>
+          </Modal.Description>
+        </Modal.Content>
+      </Modal>
+
     </Container>
   );
 }
