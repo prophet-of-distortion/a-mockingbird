@@ -100,7 +100,7 @@ const App: React.FC = () => {
         <Icon circular inverted color='blue' name='quidditch' />
         <Header.Content>
           Mockingbird
-          <Header.Subheader>Manage your preferences</Header.Subheader>
+          <Header.Subheader>Things are never as bad as they seem.</Header.Subheader>
         </Header.Content>
       </Header>
 
