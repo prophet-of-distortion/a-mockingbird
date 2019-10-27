@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Container, Header, Icon, Modal, Rail, Table } from 'semantic-ui-react'
+import { Button, Container, Header, Icon, Modal, Table } from 'semantic-ui-react'
 import './App.css';
 import ApiClient from './apiClient';
 
@@ -81,6 +81,17 @@ const App: React.FC = () => {
             </code>
           </Modal.Description>
         </Modal.Content>
+        <Modal.Actions className="form-actions">
+          <Button basic onClick={closeForm}>
+            <Icon name='close' /> Cancel
+          </Button>
+          <Button color='green'>
+            <Icon name='save' /> Save
+          </Button>
+          <Button color='red'>
+            <Icon name='trash' /> Delete
+          </Button>
+        </Modal.Actions>
       </Modal>
 
     </Container>
