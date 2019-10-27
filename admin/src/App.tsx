@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Container, Header, Icon, Modal, Table } from 'semantic-ui-react'
+import { Button, Container, Form, Header, Icon, Modal, Table, TextArea } from 'semantic-ui-react'
 import './App.css';
 import ApiClient from './apiClient';
 
@@ -9,6 +9,9 @@ const App: React.FC = () => {
     response: {},
     open: false,
   }
+
+  const[editMode, setEditMode] = useState(false)
+  const toggleEditMode = () => setEditMode(!editMode)
 
   const [mappings, setMappings] = useState([]);
   useEffect(() => {
@@ -20,7 +23,8 @@ const App: React.FC = () => {
 
   const [formOpen, setFormOpen] = useState(DEFAULT_FORM_STATE);
 
-  const openForm = (pattern: string, response: any) => {
+  const openForm = (id: number, pattern: string, response: any, editMode = false) => {
+    setEditMode(editMode)
     setFormOpen({ pattern, response, open: true })
   }
   const closeForm = () => setFormOpen(DEFAULT_FORM_STATE)
@@ -34,16 +38,61 @@ const App: React.FC = () => {
           <Table.Cell>
             {pattern}
           </Table.Cell>
-          <Table.Cell className='response'>
+          <Table.Cell
+            className='response'
+            onClick={() => openForm(index, pattern, mapping, false)}
+          >
             {JSON.stringify(response)}
           </Table.Cell>
           <Table.Cell>
-            <Button circular icon='pencil' onClick={() => openForm(pattern, mapping)} />
+            <Button
+              circular
+              icon='pencil'
+              onClick={() => openForm(index, pattern, mapping, true)}
+            />
           </Table.Cell>
         </Table.Row>
       );
     })
   }
+
+  let modalContent = (
+    <code>
+      {JSON.stringify(formOpen.response, null, 2)}
+    </code>
+  );
+
+  let saveEditButton = (
+    <Button
+      color='black'
+      onClick={() => setEditMode(true)}
+    >
+      <Icon name='edit outline' /> Edit
+    </Button>
+
+  );
+
+  if (editMode) {
+    modalContent = (
+      <Form>
+        <Form.Field
+          control={TextArea}
+          defaultValue={JSON.stringify(formOpen.response, null, 2)}
+          label='Response'
+          placeholder='Response'
+          rows='20'
+        />
+      </Form>
+    );
+
+    saveEditButton = (
+      <Button color='green'>
+        <Icon name='save' /> Save
+      </Button>
+    );
+  }
+
+
 
   return (
     <Container>
@@ -57,7 +106,7 @@ const App: React.FC = () => {
 
       <Button primary>Add item</Button>
 
-      <Table structured>
+      <Table selectable structured>
 
         <Table.Header>
           <Table.Row>
@@ -73,21 +122,17 @@ const App: React.FC = () => {
       </Table>
 
       <Modal open={formOpen.open} onClose={closeForm}>
-        <Modal.Header>{formOpen.pattern}</Modal.Header>
+        <Modal.Header>
+          {formOpen.pattern}
+        </Modal.Header>
         <Modal.Content>
-          <Modal.Description>
-            <code>
-              {JSON.stringify(formOpen.response)}
-            </code>
-          </Modal.Description>
+          {modalContent}
         </Modal.Content>
         <Modal.Actions className="form-actions">
           <Button basic onClick={closeForm}>
             <Icon name='close' /> Cancel
           </Button>
-          <Button color='green'>
-            <Icon name='save' /> Save
-          </Button>
+          {saveEditButton}
           <Button color='red'>
             <Icon name='trash' /> Delete
           </Button>
