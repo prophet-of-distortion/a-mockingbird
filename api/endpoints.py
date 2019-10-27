@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import abort, Flask, jsonify
 from flask_cors import CORS
 import json, os
 
@@ -18,5 +18,5 @@ def get_all_mappings():
 def update_mapping(id):
     index = id - 1;
     if 0 > index or index >= len(load_mapping_as_json()):
-        return jsonify(error="Mapping not found!"), 404
+        return abort(404)
     return jsonify(message='Success!')
