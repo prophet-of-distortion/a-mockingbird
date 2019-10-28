@@ -24,7 +24,14 @@ const App: React.FC = () => {
 
   const handleFormSubmit = (event: SyntheticEvent) => {
     event.preventDefault();
-    // @TODO handle form submit
+    const apiClient = new ApiClient();
+    const {id, response } = formState;
+    apiClient.updateMapping(id, JSON.parse(response)).then((data) => {
+      if (data.success) {
+        setMappings(data.mappings);
+        setFormOpen({ ...formOpen, open: false });
+      }
+    });
   }
 
   const[editMode, setEditMode] = useState(false)

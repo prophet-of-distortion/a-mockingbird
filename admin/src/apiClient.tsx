@@ -11,6 +11,10 @@ class ApiClient {
     return this.perform('GET', '/mappings');
   }
 
+  updateMapping(id: number, mapping: object) {
+    return this.perform('PUT', `/mapping/${id}`, mapping);
+  }
+
   async perform (method: Method, resource: string, data?: any) {
     return client({
       method,
