@@ -7,6 +7,10 @@ const client = axios.create({
 });
 
 class ApiClient {
+  createMapping(mapping: object) {
+    return this.perform('POST', '/mapping', mapping);
+  }
+
   getMappings() {
     return this.perform('GET', '/mappings');
   }

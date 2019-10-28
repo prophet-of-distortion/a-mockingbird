@@ -9,6 +9,7 @@ enum Modes {
   VIEW
 }
 
+
 const App: React.FC = () => {
   const DEFAULT_FORM_STATE = {
     pattern: '',
@@ -16,11 +17,23 @@ const App: React.FC = () => {
     open: false,
   }
 
+  const MAPPINGS_TEMPLATE = [
+    "/",
+    {
+      "status": 200,
+      "header": {},
+      "body": {}
+    }
+  ];
+
+  const[mode, setMode] = useState(Modes.VIEW)
+
   const[formState, setFormState] = useState({
     id: -1,
     response: '',
   });
   const handleInputChange = (event: SyntheticEvent) => {
+
     const target = event.target as HTMLInputElement
     setFormState({
       ...formState,
@@ -32,15 +45,27 @@ const App: React.FC = () => {
     event.preventDefault();
     const apiClient = new ApiClient();
     const {id, response } = formState;
-    apiClient.updateMapping(id, JSON.parse(response)).then((data) => {
-      if (data.success) {
-        setMappings(data.mappings);
-        setFormOpen({ ...formOpen, open: false });
-      }
-    });
-  }
 
-  const[mode, setMode] = useState(Modes.VIEW)
+    switch(mode) {
+      case Modes.ADD:
+        apiClient.createMapping(JSON.parse(response)).then((data) => {
+          if (data.success) {
+            setMappings(data.mappings);
+            setFormOpen({ ...formOpen, open: false });
+          }
+        })
+        break;
+
+      case Modes.EDIT:
+        apiClient.updateMapping(id, JSON.parse(response)).then((data) => {
+          if (data.success) {
+            setMappings(data.mappings);
+            setFormOpen({ ...formOpen, open: false });
+          }
+        });
+        break;
+    }
+  }
 
   const [mappings, setMappings] = useState([]);
   useEffect(() => {
@@ -53,7 +78,7 @@ const App: React.FC = () => {
   const [formOpen, setFormOpen] = useState(DEFAULT_FORM_STATE);
 
   const openForm = (id: number, pattern: string, response: any, mode: Modes = Modes.VIEW) => {
-    setMode(Modes.EDIT)
+    setMode(mode)
     setFormState({
       ...formState,
       id,
@@ -92,6 +117,31 @@ const App: React.FC = () => {
 
   let modalContent, saveEditButton;
   switch(mode) {
+    case Modes.ADD:
+      modalContent = (
+        <Form onSubmit={handleFormSubmit}>
+          <Form.Field
+            control={TextArea}
+            label='Response'
+            name='response'
+            placeholder='Response'
+            rows='20'
+            value={formState.response}
+            onChange={handleInputChange}
+          />
+        </Form>
+      );
+
+      saveEditButton = (
+        <Button
+          color='green'
+          onClick={handleFormSubmit}
+        >
+          <Icon name='add circle' /> Add
+        </Button>
+      );
+      break;
+
     case Modes.EDIT:
       modalContent = (
         <Form onSubmit={handleFormSubmit}>
@@ -144,7 +194,13 @@ const App: React.FC = () => {
         </Header.Content>
       </Header>
 
-      <Button primary>Add item</Button>
+      <Button
+        primary
+        onClick={() => openForm(-1, "/", MAPPINGS_TEMPLATE, Modes.ADD)}
+      >
+        <Icon name='map signs'></Icon>
+        Add Mapping
+      </Button>
 
       <Table selectable structured>
 
