@@ -1,4 +1,4 @@
-from flask import abort, Flask, jsonify
+from flask import abort, Flask, jsonify, request
 from flask_cors import CORS
 import json, os
 
@@ -10,13 +10,20 @@ def load_mapping_as_json():
         mappings = json.load(f)
     return mappings
 
+def save_mapping_as_json(data):
+    with open(os.path.abspath(f"../config/mappings.json"), 'w') as f:
+        json.dump(data, f, indent=2)
+
 @app.route('/mappings', methods=['GET'])
 def get_all_mappings():
     return jsonify(load_mapping_as_json())
 
-@app.route('/mapping/<int:id>', methods=['GET'])
+@app.route('/mapping/<int:id>', methods=['PUT'])
 def update_mapping(id):
-    index = id - 1;
+    index = id;
     if 0 > index or index >= len(load_mapping_as_json()):
         return abort(404)
-    return jsonify(message='Success!')
+    mappings = load_mapping_as_json()
+    mappings[id] = request.get_json()
+    save_mapping_as_json(mappings)
+    return jsonify(success=True, mappings=mappings)
