@@ -44,6 +44,6 @@ def update_mapping(index):
     if 0 > index or index >= len(load_mapping_as_json()):
         return abort(404)
     mappings = load_mapping_as_json()
-    mappings[id] = request.get_json()
+    mappings[index] = request.get_json()
     save_mapping_as_json(mappings)
     return jsonify(success=True, mappings=mappings)
