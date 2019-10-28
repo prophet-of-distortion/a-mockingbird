@@ -195,10 +195,10 @@ const App: React.FC = () => {
   return (
     <Container>
       <Header as='h2'>
-        <Icon circular inverted color='blue' name='quidditch' />
+        <Icon circular inverted color='red' name='quidditch' />
         <Header.Content>
           Mockingbird
-          <Header.Subheader>Things are never as bad as they seem.</Header.Subheader>
+          <Header.Subheader>Things are never as bad as they seem</Header.Subheader>
         </Header.Content>
       </Header>
 
