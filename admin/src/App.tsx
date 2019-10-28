@@ -48,7 +48,7 @@ const App: React.FC = () => {
 
   const handleInputChange = (event: SyntheticEvent) => {
 
-    const target = event.target as HTMLInputElement | HTMLTextAreaElement
+    const target = event.target as HTMLInputElement;
     setFormState({
       ...formState,
       [target.name]: target.value,

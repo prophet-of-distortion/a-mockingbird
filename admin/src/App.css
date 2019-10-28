@@ -5,3 +5,11 @@
 #root {
   padding: 24px 0;
 }
+
+textarea {
+  font-family: monospace;
+}
+
+code {
+  white-space: pre;
+}
