@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, SyntheticEvent } from 'react';
 import { Button, Container, Form, Header, Icon, Modal, Table, TextArea } from 'semantic-ui-react'
 import './App.css';
 import ApiClient from './apiClient';
@@ -8,6 +8,23 @@ const App: React.FC = () => {
     pattern: '',
     response: {},
     open: false,
+  }
+
+  const[formState, setFormState] = useState({
+    id: -1,
+    response: '',
+  });
+  const handleInputChange = (event: SyntheticEvent) => {
+    const target = event.target as HTMLInputElement
+    setFormState({
+      ...formState,
+      [target.name]: target.value,
+    });
+  }
+
+  const handleFormSubmit = (event: SyntheticEvent) => {
+    event.preventDefault();
+    // @TODO handle form submit
   }
 
   const[editMode, setEditMode] = useState(false)
@@ -25,6 +42,11 @@ const App: React.FC = () => {
 
   const openForm = (id: number, pattern: string, response: any, editMode = false) => {
     setEditMode(editMode)
+    setFormState({
+      ...formState,
+      id,
+      response: JSON.stringify(response, null, 2),
+    })
     setFormOpen({ pattern, response, open: true })
   }
   const closeForm = () => setFormOpen(DEFAULT_FORM_STATE)
@@ -74,19 +96,24 @@ const App: React.FC = () => {
 
   if (editMode) {
     modalContent = (
-      <Form>
+      <Form onSubmit={handleFormSubmit}>
         <Form.Field
           control={TextArea}
-          defaultValue={JSON.stringify(formOpen.response, null, 2)}
           label='Response'
+          name='response'
           placeholder='Response'
           rows='20'
+          value={formState.response}
+          onChange={handleInputChange}
         />
       </Form>
     );
 
     saveEditButton = (
-      <Button color='green'>
+      <Button
+        color='green'
+        onClick={handleFormSubmit}
+      >
         <Icon name='save' /> Save
       </Button>
     );
