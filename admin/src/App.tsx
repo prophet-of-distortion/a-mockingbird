@@ -9,8 +9,14 @@ enum Modes {
   VIEW
 }
 
+interface ApiReponse {
+  success: boolean;
+  mappings: any;
+}
 
 const App: React.FC = () => {
+  const apiClient = new ApiClient();
+
   const DEFAULT_FORM_STATE = {
     pattern: '',
     response: {},
@@ -32,9 +38,17 @@ const App: React.FC = () => {
     id: -1,
     response: '',
   });
+
+  const apiResponseHandler = (data: ApiReponse) => {
+    if (data.success) {
+      setMappings(data.mappings);
+      setFormOpen({ ...formOpen, open: false });
+    }
+  }
+
   const handleInputChange = (event: SyntheticEvent) => {
 
-    const target = event.target as HTMLInputElement
+    const target = event.target as HTMLInputElement | HTMLTextAreaElement
     setFormState({
       ...formState,
       [target.name]: target.value,
@@ -43,28 +57,22 @@ const App: React.FC = () => {
 
   const handleFormSubmit = (event: SyntheticEvent) => {
     event.preventDefault();
-    const apiClient = new ApiClient();
     const {id, response } = formState;
 
     switch(mode) {
       case Modes.ADD:
-        apiClient.createMapping(JSON.parse(response)).then((data) => {
-          if (data.success) {
-            setMappings(data.mappings);
-            setFormOpen({ ...formOpen, open: false });
-          }
-        })
+        apiClient.createMapping(JSON.parse(response)).then(apiResponseHandler)
         break;
 
       case Modes.EDIT:
-        apiClient.updateMapping(id, JSON.parse(response)).then((data) => {
-          if (data.success) {
-            setMappings(data.mappings);
-            setFormOpen({ ...formOpen, open: false });
-          }
-        });
+        apiClient.updateMapping(id, JSON.parse(response)).then(apiResponseHandler);
         break;
     }
+  }
+
+  const handleDeleteMapping = () => {
+    const { id } = formState;
+    apiClient.deleteMapping(id).then(apiResponseHandler);
   }
 
   const [mappings, setMappings] = useState([]);
@@ -230,7 +238,10 @@ const App: React.FC = () => {
           </Button>
           {saveEditButton}
           {mode !== Modes.ADD &&
-            <Button color='red'>
+            <Button
+              color='red'
+              onClick={handleDeleteMapping}
+            >
               <Icon name='trash' /> Delete
             </Button>
           }

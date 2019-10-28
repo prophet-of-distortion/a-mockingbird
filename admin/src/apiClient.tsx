@@ -11,6 +11,10 @@ class ApiClient {
     return this.perform('POST', '/mapping', mapping);
   }
 
+  deleteMapping(id: number) {
+    return this.perform('DELETE', `/mapping/${id}`);
+  }
+
   getMappings() {
     return this.perform('GET', '/mappings');
   }
