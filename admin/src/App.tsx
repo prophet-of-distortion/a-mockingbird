@@ -219,7 +219,7 @@ const App: React.FC = () => {
 
       <Modal open={formOpen.open} onClose={closeForm}>
         <Modal.Header>
-          {formOpen.pattern}
+          {mode === Modes.ADD ? 'New mapping' : formOpen.pattern}
         </Modal.Header>
         <Modal.Content>
           {modalContent}
@@ -229,9 +229,11 @@ const App: React.FC = () => {
             <Icon name='close' /> Cancel
           </Button>
           {saveEditButton}
-          <Button color='red'>
-            <Icon name='trash' /> Delete
-          </Button>
+          {mode !== Modes.ADD &&
+            <Button color='red'>
+              <Icon name='trash' /> Delete
+            </Button>
+          }
         </Modal.Actions>
       </Modal>
 
