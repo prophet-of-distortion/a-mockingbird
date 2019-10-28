@@ -1,5 +1,10 @@
 version: "3"
 services:
+  admin:
+    build: ./admin
+    ports:
+      - "80:80"
+
   api:
     build: ./api
     expose:
