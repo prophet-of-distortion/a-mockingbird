@@ -14,6 +14,13 @@ def save_mapping_as_json(data):
     with open(os.path.abspath(f"../config/mappings.json"), 'w') as f:
         json.dump(data, f, indent=2)
 
+@app.route('/mapping', methods=['POST'])
+def create_mapping():
+    mappings = load_mapping_as_json()
+    mappings.append(request.get_json())
+    save_mapping_as_json(mappings)
+    return jsonify(success=True, mappings=mappings)
+
 @app.route('/mappings', methods=['GET'])
 def get_all_mappings():
     return jsonify(load_mapping_as_json())
