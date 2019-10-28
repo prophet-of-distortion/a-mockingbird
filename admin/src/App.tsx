@@ -3,6 +3,12 @@ import { Button, Container, Form, Header, Icon, Modal, Table, TextArea } from 's
 import './App.css';
 import ApiClient from './apiClient';
 
+enum Modes {
+  ADD,
+  EDIT,
+  VIEW
+}
+
 const App: React.FC = () => {
   const DEFAULT_FORM_STATE = {
     pattern: '',
@@ -34,8 +40,7 @@ const App: React.FC = () => {
     });
   }
 
-  const[editMode, setEditMode] = useState(false)
-  const toggleEditMode = () => setEditMode(!editMode)
+  const[mode, setMode] = useState(Modes.VIEW)
 
   const [mappings, setMappings] = useState([]);
   useEffect(() => {
@@ -47,8 +52,8 @@ const App: React.FC = () => {
 
   const [formOpen, setFormOpen] = useState(DEFAULT_FORM_STATE);
 
-  const openForm = (id: number, pattern: string, response: any, editMode = false) => {
-    setEditMode(editMode)
+  const openForm = (id: number, pattern: string, response: any, mode: Modes = Modes.VIEW) => {
+    setMode(Modes.EDIT)
     setFormState({
       ...formState,
       id,
@@ -69,7 +74,7 @@ const App: React.FC = () => {
           </Table.Cell>
           <Table.Cell
             className='response'
-            onClick={() => openForm(index, pattern, mapping, false)}
+            onClick={() => openForm(index, pattern, mapping, Modes.VIEW)}
           >
             {JSON.stringify(response)}
           </Table.Cell>
@@ -77,7 +82,7 @@ const App: React.FC = () => {
             <Button
               circular
               icon='pencil'
-              onClick={() => openForm(index, pattern, mapping, true)}
+              onClick={() => openForm(index, pattern, mapping, Modes.EDIT)}
             />
           </Table.Cell>
         </Table.Row>
@@ -85,48 +90,49 @@ const App: React.FC = () => {
     })
   }
 
-  let modalContent = (
-    <code>
-      {JSON.stringify(formOpen.response, null, 2)}
-    </code>
-  );
+  let modalContent, saveEditButton;
+  switch(mode) {
+    case Modes.EDIT:
+      modalContent = (
+        <Form onSubmit={handleFormSubmit}>
+          <Form.Field
+            control={TextArea}
+            label='Response'
+            name='response'
+            placeholder='Response'
+            rows='20'
+            value={formState.response}
+            onChange={handleInputChange}
+          />
+        </Form>
+      );
 
-  let saveEditButton = (
-    <Button
-      color='black'
-      onClick={() => setEditMode(true)}
-    >
-      <Icon name='edit outline' /> Edit
-    </Button>
+      saveEditButton = (
+        <Button
+          color='green'
+          onClick={handleFormSubmit}
+        >
+          <Icon name='save' /> Save
+        </Button>
+      );
+      break;
 
-  );
+    default:
+        modalContent = (
+          <code>
+            {JSON.stringify(formOpen.response, null, 2)}
+          </code>
+        );
 
-  if (editMode) {
-    modalContent = (
-      <Form onSubmit={handleFormSubmit}>
-        <Form.Field
-          control={TextArea}
-          label='Response'
-          name='response'
-          placeholder='Response'
-          rows='20'
-          value={formState.response}
-          onChange={handleInputChange}
-        />
-      </Form>
-    );
-
-    saveEditButton = (
-      <Button
-        color='green'
-        onClick={handleFormSubmit}
-      >
-        <Icon name='save' /> Save
-      </Button>
-    );
+        saveEditButton = (
+          <Button
+            color='black'
+            onClick={() => setMode(Modes.EDIT)}
+          >
+            <Icon name='edit outline' /> Edit
+          </Button>
+        );
   }
-
-
 
   return (
     <Container>
