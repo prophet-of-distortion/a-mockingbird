@@ -96,8 +96,16 @@ const App: React.FC = () => {
   }
   const closeForm = () => setFormOpen(DEFAULT_FORM_STATE)
 
-  const renderMappings = (mappings: any) => {
-    if (!mappings) { return [] }
+  const renderMappings = (mappings: any[]) => {
+    if (!mappings || mappings.length < 1) {
+      return (
+        <Table.Row>
+          <Table.Cell colSpan="2">
+            No Mapping
+          </Table.Cell>
+        </Table.Row>
+      )
+    }
     return mappings.map((mapping: any, index: number) => {
       const [pattern, response] = mapping;
       return (
