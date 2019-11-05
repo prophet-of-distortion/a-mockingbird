@@ -16,6 +16,8 @@ RUN pipenv install --system --deploy
 
 WORKDIR /api
 
+COPY . .
+
 ENV FLASK_APP=endpoints.py
 ENV FLASK_ENV=development
 ENTRYPOINT ["flask", "run", "--host", "0.0.0.0"]

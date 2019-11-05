@@ -127,6 +127,6 @@ certificates/*
 !certificates/.gitkeep
 
 config/*
-!config/mappings.default.json
+!config/mappings.json
 
 .vscode/*
